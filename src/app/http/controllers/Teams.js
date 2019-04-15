@@ -44,7 +44,11 @@ export default class Teams {
       await team.save();
       res.status(201).send(team);
     } catch (err) {
-      res.boom.internal(err);
+      if (err.name === 'ValidationError') {
+        res.boom.badData(err);
+      } else {
+        res.boom.internal(err);
+      }
     }
   }
   /**
