@@ -1,0 +1,9 @@
+{
+	"verbose": false,
+	"watch": [
+		".env",
+		".nodemon",
+		"package.json",
+		"src/*"
+	]
+}
