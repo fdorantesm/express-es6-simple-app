@@ -9,13 +9,14 @@ export default class Teams {
    *
    * @param {Request} req
    * @param {Response} res
+   * @param {Function} next
    */
-  static async list(req, res) {
+  static async list(req, res, next) {
     try {
       const result = await Team.find();
       res.send(result);
     } catch (err) {
-      res.boom.internal(err);
+      next(err);
     }
   }
   /**
@@ -23,13 +24,14 @@ export default class Teams {
    *
    * @param {Request} req
    * @param {Response} res
+   * @param {Function} next
    */
-  static async get(req, res) {
+  static async get(req, res, next) {
     try {
       const result = await Team.findById(req.params.id);
       res.send(result);
     } catch (err) {
-      res.boom.internal(err);
+      next(err);
     }
   }
   /**
@@ -37,18 +39,15 @@ export default class Teams {
    *
    * @param {Request} req
    * @param {Response} res
+   * @param {Function} next
    */
-  static async create(req, res) {
+  static async create(req, res, next) {
     try {
       const team = new Team(req.body);
       await team.save();
       res.status(201).send(team);
     } catch (err) {
-      if (err.name === 'ValidationError') {
-        res.boom.badData(err);
-      } else {
-        res.boom.internal(err);
-      }
+      next(err);
     }
   }
   /**
@@ -56,8 +55,9 @@ export default class Teams {
    *
    * @param {Request} req
    * @param {Response} res
+   * @param {Function} next
    */
-  static async update(req, res) {
+  static async update(req, res, next) {
     try {
       const team = await Team.findById(req.params.id);
       Object.keys(req.body).map((key) => {
@@ -66,7 +66,7 @@ export default class Teams {
       await team.save();
       res.status(200).send(team);
     } catch (err) {
-      res.boom.internal(err);
+      next(err);
     }
   }
   /**
@@ -74,13 +74,14 @@ export default class Teams {
    *
    * @param {Request} req
    * @param {Response} res
+   * @param {Function} next
    */
-  static async delete(req, res) {
+  static async delete(req, res, next) {
     try {
       const team = await Team.findByIdAndRemove(req.params.id);
       res.status(204).send(team);
     } catch (err) {
-      res.boom.internal(err);
+      next(err);
     }
   }
 }

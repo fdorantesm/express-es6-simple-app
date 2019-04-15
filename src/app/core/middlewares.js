@@ -27,8 +27,14 @@ export default function middlewares(app) {
   /**
    * Error Handler
    */
-  app.use((error, req, res, next) => { // eslint-disable-line
-    res.status(error.status || 500).send(error);
+  app.use((err, req, res, next) => { // eslint-disable-line
+    const exception = err.name || err.message;
+    switch (exception) {
+      case 'CastError': res.boom.notFound(); break;
+      case 'ValidationError': res.boom.badData(err); break;
+      case 'NotFoundError': res.boom.notFound(err); break;
+      default: res.boom.internal(err);
+    }
   });
 
   app.use(compression());
