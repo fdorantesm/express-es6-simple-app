@@ -12,14 +12,7 @@ export default class Teams {
    */
   static async list(req, res) {
     try {
-      const populate = ['members'];
-      const pagination = {
-        page: req.query.page || 1,
-        limit: req.query.perPage || 12,
-        populate,
-      };
-      const filter = {};
-      const result = await Team.paginate(filter, pagination);
+      const result = await Team.find();
       res.send(result);
     } catch (err) {
       res.boom.internal(err);
@@ -48,6 +41,7 @@ export default class Teams {
   static async create(req, res) {
     try {
       const team = new Team(req.body);
+      await team.save();
       res.status(201).send(team);
     } catch (err) {
       res.boom.internal(err);
@@ -61,8 +55,12 @@ export default class Teams {
    */
   static async update(req, res) {
     try {
-      const team = await Team.updateOne({id: req.params.id}, req.body);
-      res.status(202).send(team);
+      const team = await Team.findById(req.params.id);
+      Object.keys(req.body).map((key) => {
+        team[key] = req.body[key];
+      });
+      await team.save();
+      res.status(200).send(team);
     } catch (err) {
       res.boom.internal(err);
     }
@@ -76,7 +74,7 @@ export default class Teams {
   static async delete(req, res) {
     try {
       const team = await Team.findByIdAndRemove(req.params.id);
-      res.send(team);
+      res.status(204).send(team);
     } catch (err) {
       res.boom.internal(err);
     }
