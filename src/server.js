@@ -1,8 +1,8 @@
+import env from '@/env'; // eslint-disable-line
 import fs from 'fs';
 import http from 'http';
 import https from 'https';
 import app from 'app';
-import env from '@/env'; // eslint-disable-line
 
 const key = fs.readFileSync(process.env.APP_SSL_KEY);
 const cert = fs.readFileSync(process.env.APP_SSL_CERT);
