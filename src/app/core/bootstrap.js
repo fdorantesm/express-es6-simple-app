@@ -1,5 +1,5 @@
 import middlewares from 'core/middlewares';
-
+import mongoose from 'libraries/mongoose'; // eslint-disable-line
 /**
  * Module to set up Express props.
  *

@@ -1,3 +1,5 @@
+import Team from 'models/Team';
+
 /**
  * Teams Controller
  */
@@ -9,7 +11,19 @@ export default class Teams {
    * @param {Response} res
    */
   static async list(req, res) {
-    res.send({method: 'list'});
+    try {
+      const populate = ['members'];
+      const pagination = {
+        page: req.query.page || 1,
+        limit: req.query.perPage || 12,
+        populate,
+      };
+      const filter = {};
+      const result = await Team.paginate(filter, pagination);
+      res.send(result);
+    } catch (err) {
+      res.boom.internal(err);
+    }
   }
   /**
    * Method to get a single team
@@ -18,7 +32,12 @@ export default class Teams {
    * @param {Response} res
    */
   static async get(req, res) {
-    res.send({method: 'get'});
+    try {
+      const result = await Team.findById(req.params.id);
+      res.send(result);
+    } catch (err) {
+      res.boom.internal(err);
+    }
   }
   /**
    * Method to create a team
@@ -27,7 +46,12 @@ export default class Teams {
    * @param {Response} res
    */
   static async create(req, res) {
-    res.send({method: 'create'});
+    try {
+      const team = new Team(req.body);
+      res.status(201).send(team);
+    } catch (err) {
+      res.boom.internal(err);
+    }
   }
   /**
    * Method to update a team
@@ -36,7 +60,12 @@ export default class Teams {
    * @param {Response} res
    */
   static async update(req, res) {
-    res.send({method: 'update'});
+    try {
+      const team = await Team.updateOne({id: req.params.id}, req.body);
+      res.status(202).send(team);
+    } catch (err) {
+      res.boom.internal(err);
+    }
   }
   /**
    * Method to delete a team
@@ -45,6 +74,11 @@ export default class Teams {
    * @param {Response} res
    */
   static async delete(req, res) {
-    res.send({method: 'delete'});
+    try {
+      const team = await Team.findByIdAndRemove(req.params.id);
+      res.send(team);
+    } catch (err) {
+      res.boom.internal(err);
+    }
   }
 }
